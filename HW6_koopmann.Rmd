@@ -1,0 +1,52 @@
+---
+title: "HW6_koopmann"
+author: "Michael Koopmann"
+date: "3/8/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+```
+
+
+```{r happy}
+data(happy, package="productplots")
+head(happy)
+```
+```{r HAPPY}
+HAPPY <- readRDS("data/HAPPY.rds")
+head(HAPPY)
+```
+
+```{r clean}
+HAPPY <- replace(HAPPY, HAPPY == "IAP", NA)
+HAPPY <- replace(HAPPY, HAPPY == "DK", NA)
+HAPPY <- replace(HAPPY, HAPPY == "NA", NA)
+```
+
+
+```{r check_type}
+HAPPY %>% str()
+```
+
+```{r convert}
+HAPPY <- as.data.frame(unclass(HAPPY), stringsAsFactors = TRUE)
+HAPPY <- HAPPY %>% mutate(
+    age = replace(AGE, AGE == "89 AND OLDER", 89),
+    age = as.numeric(age)
+) %>% select(-AGE)
+```
+
+```{r recheck}
+HAPPY %>% str()
+```
+
+```{r individual_exploration}
+ggplot(HAPPY, aes(x = factor(MARITAL), fill = HAPPY)) +
+  geom_bar(position="fill") + theme_minimal(base_size = 6)+ facet_wrap(~SEX) + coord_flip() 
+```
+
+  For my comparison I compared happiness with SEX and MARTIAL variables to give an idea of the comparison of how males vs females handle different martial status like divorced, separated, or marriage.  Overall the comparison between males and females are shockingly similar.  Both genders were happiest when their martial status was married followed by never married with the most unhappiness being in separated and then divorced and widowed.  Which is as I expected because obviously being separated, divorced, and widowed will decrease your happiness but I didn't expect both genders to be so close with their happiness levels across all the marital fields.
